@@ -18,7 +18,7 @@ $_['heading_title']					= 'Billplz Malaysia Online Payment Gateway';
 $_['text_payment']					= 'Payment';
 $_['text_success']					= 'Success: You have modified Billplz Malaysia Online Payment Gateway account details!';
 $_['text_edit']                     = 'Edit Billplz';
-$_['text_billplz']	     			= '<a onclick="window.open(\'http://www.billplz.com/\');" style="text-decoration:none;"><img src="view/image/payment/billplz-logo.jpg" alt="Billplz Online Payment Gateway" title="Billplz Malaysia Online Payment Gateway" style="border: 0px solid #EEEEEE;" height=63 width=198/></a>';
+$_['text_billplz']	     			= '<a onclick="window.open(\'http://www.billplz.com/\');" style="text-decoration:none;"><img src="view/image/payment/billplz-logo.jpg" alt="Billplz Online Payment Gateway" title="Billplz Malaysia Online Payment Gateway" style="border: 0px solid #EEEEEE;" height=25 width=94/></a>';
 
 // Entry
 $_['entry_mid']						= 'Billplz API Key';
