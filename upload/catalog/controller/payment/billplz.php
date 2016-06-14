@@ -43,7 +43,7 @@ class ControllerPaymentBillplz extends Controller
 		$data        = array(
 			'collection_id' => $this->config->get('billplz_vkey'),
 			'email' => $order_info['email'],
-			'description' => substr(implode($data['prod_desc']), 0, 199),
+			'description' => substr("Order " . $this->session->data['order_id'] . " - ".implode($data['prod_desc']), 0, 199),
 			'mobile' => $custTel,
 			'name' => $order_info['payment_firstname'] . ' ' . $order_info['payment_lastname'],
 			'reference_1_label' => "ID",
