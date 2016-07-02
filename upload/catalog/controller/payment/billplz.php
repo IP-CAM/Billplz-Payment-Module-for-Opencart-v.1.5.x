@@ -94,7 +94,7 @@ class ControllerPaymentBillplz extends Controller
 	public function return_ipn()
 	{
 		$this->load->model('checkout/order');
-		$tranID  = implode($_GET['billplz']);
+		$tranID  = $_GET['billplz']['id'];
 		//***************************************
 		$process = curl_init($this->config->get('billplz_sandbox') . $tranID);
 		curl_setopt($process, CURLOPT_HEADER, 0);
