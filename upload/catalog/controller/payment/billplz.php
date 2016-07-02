@@ -37,17 +37,25 @@ class ControllerPaymentBillplz extends Controller
 		//$data['returnurl'] = $this->url->link('payment/billplz/return_ipn', '', 'SSL');
 		//***************************************
 		//$billplz_url = parse_url(HTTP_SERVER);
+		
+		//Delivery Notification
+		$delivery = $this->config->get('billplz_delivery');
+		$deliver = $delivery > 0 ? true : false;
+		$orderInfoEmail = $delivery == "2" ? null : $order_info['email'];
+		$custTel = $delivery == "1" ? null : $custTel;
+		
 		$returnurl   = $this->url->link('payment/billplz/return_ipn', '', 'SSL');
 		$callbackurl = $this->url->link('payment/billplz/callback_ipn', '', 'SSL');
 		$amount      = $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false);
 		$data        = array(
 			'collection_id' => $this->config->get('billplz_vkey'),
-			'email' => $order_info['email'],
+			'email' => $orderInfoEmail,
 			'description' => substr("Order " . $this->session->data['order_id'] . " - ".implode($data['prod_desc']), 0, 199),
 			'mobile' => $custTel,
 			'name' => $order_info['payment_firstname'] . ' ' . $order_info['payment_lastname'],
 			'reference_1_label' => "ID",
 			'reference_1' => $this->session->data['order_id'],
+			'deliver' => $deliver,
 			'amount' => $amount * 100,
 			'callback_url' => $callbackurl,
 			'redirect_url' => $returnurl
