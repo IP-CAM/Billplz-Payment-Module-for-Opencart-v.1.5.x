@@ -57,6 +57,12 @@
               </select>
             </div>
           </div>
+		  <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-minlimit"><span data-toggle="tooltip" title="<?php echo $help_minlimit; ?>"><?php echo $entry_minlimit; ?></span></label>
+            <div class="col-sm-10">
+              <input type="text" name="billplz_minlimit" value="<?php echo $billplz_minlimit; ?>" placeholder="<?php echo $entry_minlimit; ?>" id="input-minlimit" class="form-control" />
+            </div>
+          </div>
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-order-status"><?php echo $entry_order_status; ?></label>
             <div class="col-sm-10">
