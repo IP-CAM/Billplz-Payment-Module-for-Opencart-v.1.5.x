@@ -163,7 +163,7 @@ class ControllerPaymentBillplz extends Controller {
 		} else {
 			$data['billplz_sort_order'] = $this->config->get('billplz_sort_order');
 		}
-		//$data['billplz_host'] = ($data['billplz_sandbox']=="0") ? 'https://www.billplz.com/api/v3/bills/' : 'https://billplz-staging.herokuapp.com/api/v3/bills/';
+		
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
