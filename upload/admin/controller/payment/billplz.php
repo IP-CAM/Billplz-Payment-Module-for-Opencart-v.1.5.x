@@ -38,6 +38,7 @@ class ControllerPaymentBillplz extends Controller {
 		$data['entry_vkey'] = $this->language->get('entry_vkey');
 		$data['entry_host'] = 'Production/Sandbox Mode';
 		$data['entry_minlimit'] = 'Minimum Limit';
+		$data['entry_delivery'] = 'Notification';
 		$data['entry_order_status'] = $this->language->get('entry_order_status');
 		$data['entry_completed_status'] = $this->language->get('entry_completed_status');
 		$data['entry_pending_status'] = $this->language->get('entry_pending_status');
@@ -109,6 +110,12 @@ class ControllerPaymentBillplz extends Controller {
 			$data['billplz_sandbox'] = $this->config->get('billplz_sandbox');
 		}
 
+		if (isset($this->request->post['billplz_delivery'])) {
+			$data['billplz_delivery'] = $this->request->post['billplz_delivery'];
+		} else {
+			$data['billplz_delivery'] = $this->config->get('billplz_delivery');
+		}
+			
 		if (isset($this->request->post['billplz_minlimit'])) {
 			$data['billplz_minlimit'] = $this->request->post['billplz_minlimit'];
 		} else {
