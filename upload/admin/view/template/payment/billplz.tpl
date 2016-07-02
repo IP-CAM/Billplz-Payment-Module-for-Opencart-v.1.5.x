@@ -58,6 +58,20 @@
             </div>
           </div>
           <div class="form-group">
+            <label class="col-sm-2 control-label" for="delivery-level"><?php echo $entry_delivery; ?></label>
+            <div class="col-sm-10">
+              <select name="billplz_delivery" id="delivery-level" class="form-control">
+                <?php $number11=array("0","1","2","3");$idno=array("0"=>"No Notification","1"=>"Email Notification","2"=>"SMS Notification","3"=>"Email & SMS Notification"); foreach ($number11 as $idno3) { ?>
+                <?php if ($idno3 == $billplz_delivery) { ?>
+                <option value="<?php echo $idno3; ?>" selected="selected"><?php echo $idno[$idno3]; ?></option>
+                <?php } else { ?>
+                <option value="<?php echo $idno3; ?>"><?php echo $idno[$idno3]; ?></option>
+                <?php } ?>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
             <label class="col-sm-2 control-label" for="input-minlimit"><span data-toggle="tooltip" title="<?php echo $help_minlimit; ?>"><?php echo $entry_minlimit; ?></span></label>
             <div class="col-sm-10">
               <input type="text" name="billplz_minlimit" value="<?php echo $billplz_minlimit; ?>" placeholder="<?php echo $entry_minlimit; ?>" id="input-minlimit" class="form-control" />
