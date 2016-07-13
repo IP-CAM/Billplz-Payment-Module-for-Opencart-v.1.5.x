@@ -25,7 +25,7 @@
       </div>
       <div class="panel-body">
         <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-billplz" class="form-horizontal">
-          <div class="form-group">
+          <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-mid"><?php echo $entry_mid; ?></label>
             <div class="col-sm-10">
               <input type="text" name="billplz_mid" value="<?php echo $billplz_mid; ?>" placeholder="<?php echo $entry_mid; ?>" id="input-mid" class="form-control" />
@@ -57,7 +57,7 @@
               </select>
             </div>
           </div>
-          <div class="form-group">
+	   <div class="form-group">
             <label class="col-sm-2 control-label" for="delivery-level"><?php echo $entry_delivery; ?></label>
             <div class="col-sm-10">
               <select name="billplz_delivery" id="delivery-level" class="form-control">
@@ -71,7 +71,7 @@
               </select>
             </div>
           </div>
-          <div class="form-group">
+	  <div class="form-group">
             <label class="col-sm-2 control-label" for="input-minlimit"><span data-toggle="tooltip" title="<?php echo $help_minlimit; ?>"><?php echo $entry_minlimit; ?></span></label>
             <div class="col-sm-10">
               <input type="text" name="billplz_minlimit" value="<?php echo $billplz_minlimit; ?>" placeholder="<?php echo $entry_minlimit; ?>" id="input-minlimit" class="form-control" />
