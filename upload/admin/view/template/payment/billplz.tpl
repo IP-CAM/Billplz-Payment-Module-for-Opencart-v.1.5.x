@@ -58,11 +58,6 @@
                         </select>
                       </td>
                     </tr>
-					<tr>
-                        <td><?php echo $entry_minlimit; ?></td>
-                        <td><input type="text" name="billplz_minlimit" value="<?php echo $billplz_minlimit; ?>" />
-                        </td>
-                    </tr>
                     <tr>
                       <td><?php echo $entry_order_status; ?></td>
                       <td><select name="billplz_order_status_id">
