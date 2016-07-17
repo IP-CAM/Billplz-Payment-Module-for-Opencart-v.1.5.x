@@ -35,7 +35,7 @@ class ControllerPaymentBillplz extends Controller {
         $this->data['entry_merchantid'] = $this->language->get('entry_merchantid');
         $this->data['entry_verifykey'] = $this->language->get('entry_verifykey');
 		$this->data['entry_host'] = 'Production/Sandbox Mode';
-		$this->data['entry_minlimit'] = 'Minimum Limit';
+		//$this->data['entry_minlimit'] = 'Minimum Limit';
 		$this->data['entry_delivery'] = 'Notification';
         $this->data['entry_order_status'] = $this->language->get('entry_order_status');
         $this->data['entry_pending_status'] = $this->language->get('entry_pending_status');
@@ -115,11 +115,11 @@ class ControllerPaymentBillplz extends Controller {
             $this->data['billplz_delivery'] = $this->config->get('billplz_delivery');
         }
 		
-		if (isset($this->request->post['billplz_minlimit'])) {
-            $this->data['billplz_minlimit'] = $this->request->post['billplz_minlimit'];
-        } else {
-            $this->data['billplz_minlimit'] = $this->config->get('billplz_minlimit');
-        }
+		//if (isset($this->request->post['billplz_minlimit'])) {
+        //    $this->data['billplz_minlimit'] = $this->request->post['billplz_minlimit'];
+        //} else {
+        //    $this->data['billplz_minlimit'] = $this->config->get('billplz_minlimit');
+        //}
 
         if (isset($this->request->post['billplz_order_status_id'])) {
             $this->data['billplz_order_status_id'] = $this->request->post['billplz_order_status_id'];
