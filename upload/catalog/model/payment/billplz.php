@@ -10,7 +10,7 @@
 class ModelPaymentBillplz extends Model {
     
     public function getMethod($address) {
-		if ($total < $this->config->get('billplz_minlimit')){
+		if ($this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false) < $this->config->get('billplz_minlimit')){
 			return null;
 		}
         $this->load->language('payment/billplz');
