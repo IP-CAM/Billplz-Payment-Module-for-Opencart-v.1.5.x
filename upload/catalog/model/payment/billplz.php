@@ -6,19 +6,11 @@
  * @author Wanzul-Hosting.com <sales@wanzul-hosting.com>
  * @version 1.5.0
  */
-class MinimumLimit extends Controller {
-	public function getAmount(){
-		$this->load->model('checkout/order');		
-		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		return $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false);
-	}
-}
+
 class ModelPaymentBillplz extends Model {
     
     public function getMethod($address) {
-		if (  MinimumLimit::getAmount() < $this->config->get('billplz_minlimit')){
-			return null;
-		}
+
         $this->load->language('payment/billplz');
 
         if ($this->config->get('billplz_status')) {
