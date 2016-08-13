@@ -179,13 +179,13 @@ class ControllerPaymentBillplz extends Controller {
 			exit("Hacking Attempt!");
 		//***************************************
 
-        $orderid         = $arr['reference_1'];
+		$orderid         = $arr['reference_1'];
 		$status          = $arr['paid'];
 		$amount          = $arr['amount'];
 		$paydate         = $arr['paid_at'];
 		$order_info      = $this->model_checkout_order->getOrder($orderid); // orderid
 
-        $this->model_checkout_order->confirm($this->request->post['orderid'], $this->config->get('billplz_order_status_id'));
+        $this->model_checkout_order->confirm($orderid, $this->config->get('billplz_order_status_id'));
         
         if ( $status )  {
             $this->model_checkout_order->update($orderid , $this->config->get('billplz_success_status_id'), "Return: PAID " . $paydate . " URL: " . $arr['url'], false);
