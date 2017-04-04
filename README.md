@@ -11,7 +11,11 @@ http://bit.ly/2abuGsW
 4. Hola, you are done!
 
 # Support
-sales@wanzul-hosting.com
+wan@wanzul-hosting.com
 
 # Donate
 www.wanzul.net/donate
+=======
+Dont forget to support us:
+www.wanzul.net/donate
+www.facebook.com/billplzplugin
