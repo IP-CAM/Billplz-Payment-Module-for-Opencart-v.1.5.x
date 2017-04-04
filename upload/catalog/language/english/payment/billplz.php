@@ -9,5 +9,3 @@
  
 // Text
 $_['text_title'] = 'Billplz Malaysia Online Payment Gateway';
-
-?>

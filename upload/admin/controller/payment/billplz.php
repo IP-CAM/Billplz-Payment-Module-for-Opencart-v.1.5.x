@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Billplz OpenCart Plugin
  * 
@@ -6,10 +7,9 @@
  * @author Wanzul-Hosting.com <sales@wanzul-hosting.com>
  * @version 1.5.0
  */
- 
 class ControllerPaymentBillplz extends Controller {
-    
-    private $error = array(); 
+
+    private $error = array();
 
     public function index() {
         $this->load->language('payment/billplz');
@@ -19,11 +19,11 @@ class ControllerPaymentBillplz extends Controller {
         $this->load->model('setting/setting');
 
         if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-            $this->model_setting_setting->editSetting('billplz', $this->request->post);				
+            $this->model_setting_setting->editSetting('billplz', $this->request->post);
             $this->session->data['success'] = $this->language->get('text_success');
             $this->redirect($this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'));
         }
-        
+
         $this->data['heading_title'] = $this->language->get('heading_title');
 
         $this->data['text_enabled'] = $this->language->get('text_enabled');
@@ -34,13 +34,14 @@ class ControllerPaymentBillplz extends Controller {
 
         $this->data['entry_merchantid'] = $this->language->get('entry_merchantid');
         $this->data['entry_verifykey'] = $this->language->get('entry_verifykey');
-		$this->data['entry_host'] = 'Production/Sandbox Mode';
-		//$this->data['entry_minlimit'] = 'Minimum Limit';
-		$this->data['entry_delivery'] = 'Notification';
+        $this->data['entry_xsign'] = $this->language->get('entry_xsign');
+        $this->data['entry_host'] = $this->language->get('entry_host');
+        $this->data['entry_minlimit'] = $this->language->get('entry_minlimit');
+        $this->data['entry_delivery'] = $this->language->get('entry_delivery');
         $this->data['entry_order_status'] = $this->language->get('entry_order_status');
         $this->data['entry_pending_status'] = $this->language->get('entry_pending_status');
         $this->data['entry_success_status'] = $this->language->get('entry_success_status');
-        $this->data['entry_failed_status'] = $this->language->get('entry_failed_status');	
+        $this->data['entry_failed_status'] = $this->language->get('entry_failed_status');
         $this->data['entry_status'] = $this->language->get('entry_status');
         $this->data['entry_sort_order'] = $this->language->get('entry_sort_order');
 
@@ -59,7 +60,7 @@ class ControllerPaymentBillplz extends Controller {
             $this->data['error_merchantid'] = $this->error['account'];
         } else {
             $this->data['error_merchantid'] = '';
-        }	
+        }
 
         if (isset($this->error['secret'])) {
             $this->data['error_verifykey'] = $this->error['secret'];
@@ -67,23 +68,29 @@ class ControllerPaymentBillplz extends Controller {
             $this->data['error_verifykey'] = '';
         }
 
+        if (isset($this->error['xsign'])) {
+            $this->data['error_xsign'] = $this->error['xsign'];
+        } else {
+            $this->data['error_xsign'] = '';
+        }
+
         $this->data['breadcrumbs'] = array();
 
         $this->data['breadcrumbs'][] = array(
-            'text'      => $this->language->get('text_home'),
-            'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),       		
+            'text' => $this->language->get('text_home'),
+            'href' => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
             'separator' => false
         );
 
         $this->data['breadcrumbs'][] = array(
-            'text'      => $this->language->get('text_payment'),
-            'href'      => $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'),
+            'text' => $this->language->get('text_payment'),
+            'href' => $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'),
             'separator' => ' :: '
         );
 
         $this->data['breadcrumbs'][] = array(
-            'text'      => $this->language->get('heading_title'),
-            'href'      => $this->url->link('payment/billplz', 'token=' . $this->session->data['token'], 'SSL'),
+            'text' => $this->language->get('heading_title'),
+            'href' => $this->url->link('payment/billplz', 'token=' . $this->session->data['token'], 'SSL'),
             'separator' => ' :: '
         );
 
@@ -103,28 +110,34 @@ class ControllerPaymentBillplz extends Controller {
             $this->data['billplz_verifykey'] = $this->config->get('billplz_verifykey');
         }
 
-		if (isset($this->request->post['billplz_sandbox'])) {
+        if (isset($this->request->post['billplz_xsign'])) {
+            $this->data['billplz_xsign'] = $this->request->post['billplz_xsign'];
+        } else {
+            $this->data['billplz_xsign'] = $this->config->get('billplz_xsign');
+        }
+        
+        if (isset($this->request->post['billplz_minlimit'])) {
+            $this->data['billplz_minlimit'] = $this->request->post['billplz_minlimit'];
+        } else {
+            $this->data['billplz_minlimit'] = $this->config->get('billplz_minlimit');
+        }
+
+        if (isset($this->request->post['billplz_sandbox'])) {
             $this->data['billplz_sandbox'] = $this->request->post['billplz_sandbox'];
         } else {
             $this->data['billplz_sandbox'] = $this->config->get('billplz_sandbox');
         }
-		
-		if (isset($this->request->post['billplz_delivery'])) {
+
+        if (isset($this->request->post['billplz_delivery'])) {
             $this->data['billplz_delivery'] = $this->request->post['billplz_delivery'];
         } else {
             $this->data['billplz_delivery'] = $this->config->get('billplz_delivery');
         }
-		
-		//if (isset($this->request->post['billplz_minlimit'])) {
-        //    $this->data['billplz_minlimit'] = $this->request->post['billplz_minlimit'];
-        //} else {
-        //    $this->data['billplz_minlimit'] = $this->config->get('billplz_minlimit');
-        //}
 
         if (isset($this->request->post['billplz_order_status_id'])) {
             $this->data['billplz_order_status_id'] = $this->request->post['billplz_order_status_id'];
         } else {
-            $this->data['billplz_order_status_id'] = $this->config->get('billplz_order_status_id'); 
+            $this->data['billplz_order_status_id'] = $this->config->get('billplz_order_status_id');
         }
 
         if (isset($this->request->post['billplz_pending_status_id'])) {
@@ -183,13 +196,17 @@ class ControllerPaymentBillplz extends Controller {
         if (!$this->request->post['billplz_verifykey']) {
             $this->error['secret'] = $this->language->get('error_verifykey');
         }
-		//Akan datang, masukkan code untuk verify API Key
-		//Dan Collection ID Disini
+
+        if (!$this->request->post['billplz_xsign']) {
+            $this->error['xsign'] = $this->language->get('error_xsign');
+        }
+        //Akan datang, masukkan code untuk verify API Key
+        //Dan Collection ID Disini
         if (!$this->error) {
             return true;
         } else {
             return false;
-        }	
+        }
     }
+
 }
-?>
