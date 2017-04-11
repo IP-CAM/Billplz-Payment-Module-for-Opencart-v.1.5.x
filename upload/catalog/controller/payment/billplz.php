@@ -101,21 +101,12 @@ class ControllerPaymentBillplz extends Controller {
          */
         $billplz = new billplzCURL;
 
-        /*
-         * Check wether we want to send email or sms or both or not
-         */
-
-        if ($data['delivery'] != '1')
-            $billplz->setMobile($data['mobile']);
-        if ($data['delivery'] != '2')
-            $billplz->setEmail($data['email']);
-
-        $deliverstatus = $data['delivery'] == '0' ? false : true;
-
         $billplz
                 ->setAmount($data['amount'])
                 ->setCollection($data['collection_id'])
-                ->setDeliver($deliverstatus)
+                ->setDeliver($data['delivery'])
+                ->setMobile($data['mobile'])
+                ->setEmail($data['email'])
                 ->setDescription($data['description'])
                 ->setName($data['name'])
                 ->setPassbackURL($data['redirect_url'], $data['callback_url'])
@@ -126,7 +117,7 @@ class ControllerPaymentBillplz extends Controller {
     }
 
     public function return_ipn() {
-        
+
         $this->load->model('checkout/order');
         /*
          * Get Data. Die if input is tempered or X Signature not enabled
@@ -177,7 +168,7 @@ class ControllerPaymentBillplz extends Controller {
         }
     }
 
-    /* ****************************************************
+    /*     * ***************************************************
      * Callback with IPN(Instant Payment Notification)
      * **************************************************** */
 
@@ -229,11 +220,24 @@ class ControllerPaymentBillplz extends Controller {
 
 class billplzCURL {
 
-    var $array, $obj, $auto_submit, $url, $id;
+    var $array, $obj, $auto_submit, $url, $id, $deliverLevel, $errorMessage;
 
     public function __construct() {
         $this->array = array();
         $this->obj = new Billplzcurlaction;
+    }
+
+    public function getCollectionIndex($api_key, $mode = 'Production', $status = null, $page = '1') {
+        $this->obj->setAPI($api_key);
+        $this->obj->setAction('GETCOLLECTIONINDEX');
+        $this->obj->setURL($mode);
+        $array = [
+            'page' => $page,
+            'status' => $status,
+        ];
+        $data = $this->obj->curl_action($array);
+
+        return $data;
     }
 
     public static function getRedirectData($signkey) {
@@ -243,7 +247,6 @@ class billplzCURL {
             'paid' => isset($_GET['billplz']['paid']) ? $_GET['billplz']['paid'] : exit('Please enable Billplz XSignature Payment Completion'),
             'x_signature' => isset($_GET['billplz']['x_signature']) ? $_GET['billplz']['x_signature'] : exit('Please enable Billplz XSignature Payment Completion'),
         ];
-
         $preparedString = '';
         foreach ($data as $key => $value) {
             $preparedString .= 'billplz' . $key . $value;
@@ -253,9 +256,7 @@ class billplzCURL {
                 $preparedString .= '|';
             }
         }
-
         $generatedSHA = hash_hmac('sha256', $preparedString, $signkey);
-
         if ($data['x_signature'] === $generatedSHA) {
             return $data;
         } else {
@@ -279,7 +280,6 @@ class billplzCURL {
             'url' => $_POST['url'],
             'x_signature' => $_POST['x_signature'],
         ];
-
         $preparedString = '';
         foreach ($data as $key => $value) {
             $preparedString .= $key . $value;
@@ -297,8 +297,8 @@ class billplzCURL {
         }
     }
 
-    //--------------------------------------------------------------------------
-    // Direct Use
+//--------------------------------------------------------------------------
+// Direct Use
     public function check_apikey_collectionid($api_key, $collection_id, $mode) {
         $array = array(
             'collection_id' => $collection_id,
@@ -323,8 +323,8 @@ class billplzCURL {
         }
     }
 
-    //------------------------------------------------------------------------//
-    // Indirect Use
+//------------------------------------------------------------------------//
+// Indirect Use
     public function checkMobileNumber($mobile) {
         $mobile = preg_replace("/[^0-9]/", "", $mobile);
         $custTel = $mobile;
@@ -343,9 +343,8 @@ class billplzCURL {
         } return $custTel;
     }
 
-    //------------------------------------------------------------------------//
-    // Direct Use
-
+//------------------------------------------------------------------------//
+// Direct Use
     public function setCollection($collection_id) {
         $this->array['collection_id'] = $collection_id;
         return $this;
@@ -372,7 +371,17 @@ class billplzCURL {
     }
 
     public function setDeliver($deliver) {
-        $this->array['deliver'] = $deliver;
+        /*
+         * '0' => No Notification
+         * '1' => Email Notification
+         * '2' => SMS Notification
+         * '3' => Email & SMS Notification
+         * 
+         * However, if the setting is SMS and mobile phone is not given,
+         * the Email value should be used and set the delivery to false.
+         */
+        $this->deliverLevel = $deliver;
+        $this->array['deliver'] = $deliver != '0' ? true : false;
         return $this;
     }
 
@@ -398,16 +407,51 @@ class billplzCURL {
     }
 
     public function create_bill($api_key, $mode) {
-
         $this->obj->setAPI($api_key);
         $this->obj->setAction('CREATE');
         $this->obj->setURL($mode);
+
+        /*
+         * 1. Check deliverLevel. If 1 (Email only), unset mobile
+         * 2. Check deliverLevel. If 2 (SMS only), unset Email
+         * 3. Create Bills.
+         * 4. If the bills failed to be created:
+         * 5. Check if 0 (No Notification), unset Mobile
+         * 5. Check if 1(Email only), unset Email, set Mobile, deliver to false
+         * 6. Check if 2(SMS only), unset Mobile, set Email deliver to false
+         * 7. Check if 3, unset Mobile.
+         * 8. Still failed? Return false.
+         * 9. Ok. Return $this.
+         */
+
+        if ($this->deliverLevel == '1') {
+            $mobile = $this->array['mobile'];
+            unset($this->array['mobile']);
+        } else if ($this->deliverLevel == '2') {
+            $email = $this->array['email'];
+            unset($this->array['email']);
+        }
+
         $data = $this->obj->curl_action($this->array);
 
         if (isset($data['error'])) {
-            unset($this->array['mobile']);
+            if ($this->deliverLevel == '1') {
+                unset($this->array['email']);
+                $this->array['mobile'] = $mobile;
+                $this->array['deliver'] = false;
+            } else if ($this->deliverLevel == '2') {
+                unset($this->array['mobile']);
+                $this->array['email'] = $email;
+                $this->array['deliver'] = false;
+            } else {
+                unset($this->array['mobile']);
+            }
             $data = $this->obj->curl_action($this->array);
-            $this->url = $data['url'];
+        }
+
+        if (isset($data['error'])) {
+            $this->errorMessage = $data['error']['type'] . ' ' . $data['error']['message'];
+            return false;
         }
         $this->url = $data['url'];
         $this->id = $data['id'];
@@ -418,12 +462,16 @@ class billplzCURL {
         return $this->url;
     }
 
+    public function getErrorMessage() {
+        return $this->errorMessage;
+    }
+
     public function getID() {
         return $this->id;
     }
 
-    //------------------------------------------------------------------------//
-    // Direct Use
+//------------------------------------------------------------------------//
+// Direct Use
     public function check_bill($api_key, $bill_id, $mode) {
         $this->obj->setAPI($api_key);
         $this->obj->setAction('CHECK');
@@ -472,6 +520,8 @@ class Billplzcurlaction {
             $this->url .= 'bills/' . $id;
         } elseif ($this->action == 'CREATE') {
             $this->url .= 'bills/';
+        } else if ($this->action == 'GETCOLLECTIONINDEX') {
+            $this->url .= 'collections';
         } else { //COLLECTIONS
             $this->url .= 'collections/';
         }
@@ -479,16 +529,16 @@ class Billplzcurlaction {
     }
 
     public function curl_action($data = '') {
-
-        // Use wp_safe_remote_post for Windows Server Compatibility
+// Use wp_safe_remote_post for Windows Server Compatibility
         if (function_exists('wp_safe_remote_post')) {
             $curl_url = $this->url;
-            // Send this payload to Billplz for processing
+// Send this payload to Billplz for processing
             $response = wp_safe_remote_post($curl_url, $this->prepareWP($data));
             return json_decode(wp_remote_retrieve_body($response), true);
         } else {
-
             $process = curl_init();
+            if ($this->action == 'GETCOLLECTIONINDEX')
+                $this->url .= '?page=' . $data['page'] . '&status=' . $data['status'];
             curl_setopt($process, CURLOPT_URL, $this->url);
             curl_setopt($process, CURLOPT_HEADER, 0);
             curl_setopt($process, CURLOPT_USERPWD, $this->api_key . ":");
@@ -520,11 +570,9 @@ class Billplzcurlaction {
         } else {
             $args['method'] = 'POST';
         }
-
         if ($this->action == 'CREATE' || $this->action == 'COLLECTIONS') {
             $args['body'] = http_build_query($data);
         }
-
         return $args;
     }
 
