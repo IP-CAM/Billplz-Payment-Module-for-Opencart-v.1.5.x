@@ -12,33 +12,33 @@ echo $header; ?>
     <?php } ?>
     <div class="box">
         <div class="heading">
-            <h1><img src="view/image/payment/billplz-icon.png" alt="" height="22" width="22" /><?php echo $heading_title; ?></h1>
+            <h1><?php echo $heading_title; ?></h1>
             <div class="buttons"><a onclick="$('#form').submit();" class="button"><span><?php echo $button_save; ?></span></a><a onclick="location = '<?php echo $cancel; ?>';" class="button"><span><?php echo $button_cancel; ?></span></a></div>
         </div>
         <div class="content">
             <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
                 <table class="form">
                     <tr>
-                        <td><?php echo $entry_merchantid; ?></td>
-                        <td><input type="text" name="billplz_merchantid" value="<?php echo $billplz_merchantid; ?>" />
-                        <?php if ($error_merchantid) { ?>
-                            <span class="error"><?php echo $error_merchantid; ?></span>
+                        <td><?php echo $billplz_api_key; ?></td>
+                        <td><input type="text" name="billplz_api_key_value" value="<?php echo $billplz_api_key_value; ?>" />
+                        <?php if ($error_api_key) { ?>
+                            <span class="error"><?php echo $error_api_key; ?></span>
                         <?php } ?>
                         </td>
                     </tr>
                     <tr>
-                        <td><?php echo $entry_verifykey; ?></td>
-                        <td><input type="text" name="billplz_verifykey" value="<?php echo $billplz_verifykey; ?>" />
-                        <?php if ($error_verifykey) { ?>
-                            <span class="error"><?php echo $error_verifykey; ?></span>
+                        <td><?php echo $billplz_collection_id; ?></td>
+                        <td><input type="text" name="billplz_collection_id_value" value="<?php echo $billplz_collection_id_value; ?>" />
+                        <?php if ($error_collection_id) { ?>
+                            <span class="error"><?php echo $error_collection_id; ?></span>
                         <?php } ?>
                         </td>
                     </tr>
                     <tr>
-                        <td><?php echo $entry_xsign; ?></td>
-                        <td><input type="text" name="billplz_xsign" value="<?php echo $billplz_xsign; ?>" />
-                        <?php if ($error_xsign) { ?>
-                            <span class="error"><?php echo $error_xsign; ?></span>
+                        <td><?php echo $billplz_x_signature; ?></td>
+                        <td><input type="text" name="billplz_x_signature_value" value="<?php echo $billplz_x_signature_value; ?>" />
+                        <?php if ($error_x_signature) { ?>
+                            <span class="error"><?php echo $error_x_signature; ?></span>
                         <?php } ?>
                         </td>
                     </tr>
@@ -48,53 +48,10 @@ echo $header; ?>
                         </td>
                     </tr>
                     <tr>
-                        <td><?php echo $entry_host; ?></td>
-                        <td><select name="billplz_sandbox">
-			  <?php 
-                          $number11=array("Production","Staging");
-                          foreach ($number11 as $idno3) { ?>
-                          <?php if ($idno3 == $billplz_sandbox) { ?>
-                                <option value="<?php echo $idno3; ?>" selected="selected"><?php echo $idno3; ?></option>
-                          <?php } else { ?>
-                                <option value="<?php echo $idno3; ?>"><?php echo $idno3; ?></option>
-                          <?php } ?>
-                          <?php } ?>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><?php echo $entry_delivery; ?></td>
-                        <td><select name="billplz_delivery">
-				<?php 
-                                $idno=array("0"=>"No Notification","1"=>"Email Notification","2"=>"SMS Notification","3"=>"Email & SMS Notification"); 
-                                foreach ($idno as $key => $value) { ?>
-				<?php if ($key == $billplz_delivery) { ?>
-                                <option value="<?php echo $key; ?>" selected="selected"><?php echo $value; ?></option>
-				<?php } else { ?>
-                                <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
-				<?php } ?>
-				<?php } ?>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><?php echo $entry_order_status; ?></td>
-                        <td><select name="billplz_order_status_id">
-                          <?php foreach ($order_statuses as $order_status) { ?>
-                          <?php if ($order_status['order_status_id'] == $billplz_order_status_id) { ?>
-                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
-                          <?php } else { ?>
-                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-                          <?php } ?>
-                          <?php } ?>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><?php echo $entry_success_status; ?></td>
-                        <td><select name="billplz_success_status_id">
+                        <td><?php echo $entry_completed_status; ?></td>
+                        <td><select name="billplz_completed_status_id">
                             <?php foreach ($order_statuses as $order_status) { ?>
-                            <?php if ($order_status['order_status_id'] == $billplz_success_status_id) { ?>
+                            <?php if ($order_status['order_status_id'] == $billplz_completed_status_id) { ?>
                                 <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
                             <?php } else { ?>
                                 <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
@@ -104,13 +61,13 @@ echo $header; ?>
                         </td>
                     </tr>
                     <tr>
-                        <td><?php echo $entry_failed_status; ?></td>
-                        <td><select name="billplz_failed_status_id">
-                            <?php foreach ($order_statuses as $order_status) { ?>
-                            <?php if ($order_status['order_status_id'] == $billplz_failed_status_id) { ?>
-                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+                        <td><?php echo $entry_geo_zone; ?></td>
+                        <td><select name="billplz_geo_zone_id">
+                            <?php foreach ($geo_zones as $geo_zone) { ?>
+                            <?php if ($geo_zone['geo_zone_id'] == $billplz_geo_zone_id) { ?>
+                                <option value="<?php echo $geo_zone['geo_zone_id']; ?>" selected="selected"><?php echo $geo_zone['name']; ?></option>
                             <?php } else { ?>
-                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+                                <option value="<?php echo $geo_zone['geo_zone_id']; ?>"><?php echo $geo_zone['name']; ?></option>
                             <?php } ?>
                             <?php } ?>
                             </select>

@@ -1,11 +1,11 @@
 <?php
 /**
  * Billplz OpenCart Plugin
- * 
+ *
  * @package Payment Gateway
- * @author Wanzul-Hosting.com <sales@wanzul-hosting.com>
- * @version 1.5.0
+ * @author Billplz Sdn Bhd
+ * @version 3.3.1
  */
- 
+
 // Text
-$_['text_title'] = 'Billplz Malaysia Online Payment Gateway';
+$_['text_title'] = 'Billplz';
