@@ -111,7 +111,7 @@ class ControllerPaymentBillplz extends Controller
         }
 
         if (!$data['paid']){
-            $this->redirect($this->url->link('checkout/checkout'));
+            $this->redirect($this->url->link('payment/billplz/failure'));
         }
 
         $bill_id = $data['id'];
@@ -167,5 +167,32 @@ class ControllerPaymentBillplz extends Controller
         }
 
         exit('Callback Success');
+    }
+
+    public function failure() {
+        $this->load->language('payment/billplz');
+
+        $this->document->setTitle($this->language->get('heading_title'));
+
+        $this->data['heading_title'] = $this->language->get('heading_title');
+        $this->data['text_payment_failed'] = $this->language->get('text_payment_failed');
+
+        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/billplz_failure.tpl')) {
+            $this->template = $this->config->get('config_template') . '/template/payment/billplz_failure.tpl';
+        } else {
+            $this->template = 'default/template/payment/billplz_failure.tpl';
+        }
+
+        $this->children = array(
+            'common/column_left',
+            'common/column_right',
+            'common/content_top',
+            'common/content_bottom',
+            'common/footer',
+            'common/header'
+        );
+
+
+        $this->response->setOutput($this->render(true));
     }
 }
